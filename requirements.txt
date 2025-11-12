@@ -1,0 +1,10 @@
+# Core ML frameworks
+torch>=2.2,<3.0
+transformers>=4.44
+tokenizers>=0.19
+accelerate>=0.30
+
+# System utilities
+psutil>=6.0
+numpy>=1.26
+tqdm>=4.66
