@@ -1,15 +1,23 @@
 # Project-Memory-Efficient-Edge-Chatbot-on-Raspberry-Pi
 Final Project
 
-# Create and activate a virtual environment
+## Create and activate a virtual environment
+```
 python -m venv venv
-# Windows
+```
+## Windows
+```
 .\venv\Scripts\activate
-# Linux / macOS / Pi
+```
+## Linux / macOS / Pi
+```
 source venv/bin/activate
-
-# Install dependencies
+```
+## Install dependencies
+```
 pip install -r requirements.txt
-
-# Run the baseline test
+```
+## Run the baseline test
+```
 python baseline_distilgpt2.py
+```
