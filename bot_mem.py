@@ -15,4 +15,4 @@ class BotMemory:
             self.memory.popleft()
 
     def get_mem(self):
-        return self.memory
+        return "\n".join([f"{m['role']}: {m['text']}" for m in self.memory])
