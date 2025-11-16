@@ -21,3 +21,7 @@ pip install -r requirements.txt
 ```
 python baseline_distilgpt2.py
 ```
+## Run chatbot
+```
+python3 chat_bot.py
+```
