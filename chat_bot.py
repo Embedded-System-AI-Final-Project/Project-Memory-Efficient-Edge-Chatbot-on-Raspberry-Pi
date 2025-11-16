@@ -81,6 +81,7 @@ def main():
         while prompt == None:
             prompt = input("Ask the model something: ").strip().lower() or None
             if prompt == "exit":
+                print("Thank you for using this bot")
                 break_out = True
                 break
             if prompt == None:
@@ -113,9 +114,9 @@ def main():
         mem_after = psutil.Process(os.getpid()).memory_info().rss
         cpu_t_after = get_cpu_temp()
         
-        decoded = tokenizer.decode(outputs[0], skip_special_tokens = True)
-        bot_mem.add_to_mem("bot", decoded)
         prompt_len = inputs["input_ids"].shape[1]
+        decoded = tokenizer.decode(outputs[0][prompt_len:], skip_special_tokens = True)
+        bot_mem.add_to_mem("bot", decoded)
         total_len = int(outputs.shape[1])
         new_tokens_actual = max(total_len - prompt_len, 0)
 
@@ -136,13 +137,13 @@ def main():
             "cpu_temp_c_start": cpu_t_before,
             "cpu_temp_c_end": cpu_t_after
         }
-        
-        print("\n=== SAMPLE OUTPUT ===\n")
-        print(decoded[:500] + "...")
+    
         with open("baseline_log.json", "a") as f:
             f.write(json.dumps(log) + "\n")
         print("\n=== METRICS ===\n")
         print(json.dumps(log, indent=2))
 
+
+        print(decoded)
 if __name__ == "__main__":
     main()
