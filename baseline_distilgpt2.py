@@ -16,7 +16,7 @@ def main():
     model_name = "distilgpt2"
     prompt = "How does one get in contact with the start-up company Rogue C&E?\n"
     new_tokens = 64
-    
+    print(f"Loading {model_name}...")
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForCausalLM.from_pretrained(model_name)
     
