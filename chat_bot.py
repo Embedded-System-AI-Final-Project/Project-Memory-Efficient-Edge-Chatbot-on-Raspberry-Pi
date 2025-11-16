@@ -1,4 +1,6 @@
 import os, time, json, psutil, threading
+
+import torch
 from datetime import datetime
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
@@ -57,19 +59,20 @@ def get_mem_over_time(interval=0.1):
 
 
 def prompt_gen(mem, user_input):
-    bot_init = "You are a concise, helpful chatbot."
+    bot_init = "You are a concise, helpful chatbot. Only provide one response."
     return f"{bot_init}\nConversation so far:\n{mem}\nUser: {user_input}\nBot:"
 
 def main():
     model_name = "distilgpt2"
-    new_tokens = 64
+    # model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+    new_tokens = 20
     
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForCausalLM.from_pretrained(model_name)
+    model.eval()
+
     start_mem, stop_mem = get_mem_over_time(interval=0.1)
 
-
-          
     if tokenizer.pad_token_id is None and tokenizer.eos_token_id is not None:
         tokenizer.pad_token = tokenizer.eos_token
 
@@ -99,15 +102,17 @@ def main():
         inputs = tokenizer(bot_prompt, return_tensors = "pt")
         prompt = None
         start_mem() 
-        outputs = model.generate(
-            **inputs,
-            max_new_tokens = new_tokens,
-            do_sample = False,
-            temperature = 0.8,
-            top_k = 50,
-            top_p = 0.95,
-            repetition_penalty = 1.1
-        )
+        with torch.no_grad():
+            outputs = model.generate(
+                **inputs,
+                max_new_tokens = new_tokens,
+                do_sample = True,
+                temperature = 0.8,
+                top_k = 50,
+                top_p = 0.95,
+                repetition_penalty = 1.1,
+                use_cache=True,
+            )
         mem_samples = stop_mem()
         t1 = time.time()
         
