@@ -1,5 +1,6 @@
 import sys, time, json
 import os, psutil, threading
+from datetime import datetime
 from llama_cpp import Llama
 from bot_mem import BotMemory
 
@@ -55,6 +56,8 @@ def main():
     original_stderr = sys.stderr
     logfile = open("llama_load.log", "w")
     sys.stderr = logfile
+    
+    t_start = datetime.now().isoformat()
     
     llm = Llama.from_pretrained(
         repo_id="TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF",
@@ -134,7 +137,7 @@ def main():
         max_rss_mb  = max((mb for (_, mb) in mem_log), default = None) 
         
         metrics_record = {
-            "timestamp": time.time(),
+            "timestamp": t_start,
             "prompt": bot_prompt,
             "response": bot_response,
             "latency_s": round(latency_s, 3),
