@@ -12,4 +12,4 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # Run the baseline test
-python baseline_distilgpt2.py
+python llama_cpp_bot.py
