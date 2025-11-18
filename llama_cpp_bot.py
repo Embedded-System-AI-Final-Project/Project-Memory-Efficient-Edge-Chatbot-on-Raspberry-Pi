@@ -100,14 +100,14 @@ def main():
         sys.stderr = logfile_2
         for token in llm(
             bot_prompt,
-            max_tokens=50,
+            max_tokens=256,
             temperature=0.9,
             top_p=0.95,
             top_k=100,
             repeat_penalty=1.1,
             stream=True,
             # Strings to stop the bot from responding as a user
-            stop=["\nUser:", "User:", "Bot:", "user:", "bot:", "\nConversation"],
+            stop=["\nUser:", "User:", "Bot:", "user:", "bot:", "\nConversation", "conversation"],
         ):
             text = token["choices"][0]["text"]
             print(text, end="", flush=True)
