@@ -4,7 +4,12 @@ transformers>=4.44
 tokenizers>=0.19
 accelerate>=0.30
 
+llama-cpp-python
+
 # System utilities
 psutil>=6.0
 numpy>=1.26
 tqdm>=4.66
+
+# Code formatter
+black >=25.1.0
