@@ -62,7 +62,8 @@ def main():
         filename="tinyllama-1.1b-chat-v1.0.Q2_K.gguf",
         n_ctx=2048,  # Sliding window (number of cache values to keep)
         kv_cache_type="q8_0",  # INT8 KV cache
-        flash_attn=True,  # optional if your build supports it
+        flash_attn=True,
+        seed=-1, # Random seed
     )
     sys.stderr = original_stderr
     logfile.close()
