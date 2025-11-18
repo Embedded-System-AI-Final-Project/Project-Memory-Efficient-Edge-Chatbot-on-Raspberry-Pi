@@ -8,14 +8,17 @@ from bot_mem import BotMemory
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
+
 def get_cpu_temp():
-    try: 
+    try:
         import subprocess
-        out = subprocess.check_output(["vcgencmd", "measure_temp"], text = True)
-        return float(out.strip().split('=')[1].split("'")[0])
+
+        out = subprocess.check_output(["vcgencmd", "measure_temp"], text=True)
+        return float(out.strip().split("=")[1].split("'")[0])
     except Exception:
         return None
-    
+
+
 def get_mem_over_time(interval=0.1):
     """
     Function that will return two functions to be called later
@@ -30,11 +33,11 @@ def get_mem_over_time(interval=0.1):
     process = psutil.Process(os.getpid())
     thread = None
     start_time = 0
-    
+
     def sampler():
         while running:
             t = time.time() - start_time
-            mem_log.append((t, (process.memory_info().rss)/(1024*1024)))
+            mem_log.append((t, (process.memory_info().rss) / (1024 * 1024)))
             time.sleep(interval)
 
     def start():
@@ -50,9 +53,9 @@ def get_mem_over_time(interval=0.1):
     def stop():
         nonlocal running
         running = False
-        time.sleep(interval * 2) # allow final sample
+        time.sleep(interval * 2)  # allow final sample
         if thread is not None:
-            thread.join()      
+            thread.join()
         return mem_log
 
     return start, stop
@@ -62,11 +65,12 @@ def prompt_gen(mem, user_input):
     bot_init = "You are a concise, helpful chatbot. Only provide one response."
     return f"{bot_init}\nConversation so far:\n{mem}\nUser: {user_input}\nBot:"
 
+
 def main():
     model_name = "distilgpt2"
     # model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
     new_tokens = 20
-    
+
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForCausalLM.from_pretrained(model_name)
     model.eval()
@@ -96,31 +100,31 @@ def main():
         mem_before = psutil.Process(os.getpid()).memory_info().rss
         cpu_t_before = get_cpu_temp()
         t0 = time.time()
-        
+
         bot_prompt = prompt_gen(bot_mem.get_mem(), prompt)
         bot_mem.add_to_mem("user", prompt)
-        inputs = tokenizer(bot_prompt, return_tensors = "pt")
+        inputs = tokenizer(bot_prompt, return_tensors="pt")
         prompt = None
-        start_mem() 
+        start_mem()
         with torch.no_grad():
             outputs = model.generate(
                 **inputs,
-                max_new_tokens = new_tokens,
-                do_sample = True,
-                temperature = 0.8,
-                top_k = 50,
-                top_p = 0.95,
-                repetition_penalty = 1.1,
+                max_new_tokens=new_tokens,
+                do_sample=True,
+                temperature=0.8,
+                top_k=50,
+                top_p=0.95,
+                repetition_penalty=1.1,
                 use_cache=True,
             )
         mem_samples = stop_mem()
         t1 = time.time()
-        
+
         mem_after = psutil.Process(os.getpid()).memory_info().rss
         cpu_t_after = get_cpu_temp()
-        
+
         prompt_len = inputs["input_ids"].shape[1]
-        decoded = tokenizer.decode(outputs[0][prompt_len:], skip_special_tokens = True)
+        decoded = tokenizer.decode(outputs[0][prompt_len:], skip_special_tokens=True)
         bot_mem.add_to_mem("bot", decoded)
         total_len = int(outputs.shape[1])
         new_tokens_actual = max(total_len - prompt_len, 0)
@@ -140,15 +144,16 @@ def main():
             "tokens_per_s": round(tokens_per_s, 2),
             "max_rss_mb": round(max_rss_mb, 2),
             "cpu_temp_c_start": cpu_t_before,
-            "cpu_temp_c_end": cpu_t_after
+            "cpu_temp_c_end": cpu_t_after,
         }
-    
+
         with open("baseline_log.json", "a") as f:
             f.write(json.dumps(log) + "\n")
         print("\n=== METRICS ===\n")
         print(json.dumps(log, indent=2))
 
-
         print(decoded)
+
+
 if __name__ == "__main__":
     main()
