@@ -75,6 +75,8 @@ def main():
     break_out = False
     prompt = None
 
+    logfile_2 = open("llama_run_output.log", "a")
+
     while True:
         while prompt == None:
             prompt = input("Ask the model something: ").strip().lower() or None
@@ -92,7 +94,10 @@ def main():
         chat_mem.add_to_mem("user", prompt)
         prompt = None
         start_mem()
+
         bot_response = ""
+        # Redirect stderr to log_file
+        sys.stderr = logfile_2
         for token in llm(
             bot_prompt,
             max_tokens=50,
@@ -101,12 +106,18 @@ def main():
             top_k=100,
             repeat_penalty=1.1,
             stream=True,
+            # Strings to stop the bot from responding as a user
+            stop=["\nUser:", "User:", "Bot:", "user:", "bot:", "\nConversation"],
         ):
             text = token["choices"][0]["text"]
             print(text, end="", flush=True)
             bot_response += text
         mem_log = stop_mem()
+        print("\n")
+        # Redirect error back to proper output
+        sys.stderr = original_stderr
         chat_mem.add_to_mem("bot", bot_response)
+    logfile_2.close()
 
 
 if __name__ == "__main__":
