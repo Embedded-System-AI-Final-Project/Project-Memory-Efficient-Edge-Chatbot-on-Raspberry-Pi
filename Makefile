@@ -1,12 +1,12 @@
-.PHONY: setup clean
+.PHONY: setup clean fix
 
 setup:
-	if [ "$$VIRTUAL_ENV" != "" ]; then \
+	@if [ "$$VIRTUAL_ENV" != "" ]; then \
 		echo "Currently in a virtual environment: $$VIRTUAL_ENV"; \
 	else \
-		python -m venv venv; \
+		python3 -m venv venv; \
 	fi
-		source venv/bin/activate && pip install -r requirements.txt
+	@. venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt
 
 fix:
 	black .
