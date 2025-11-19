@@ -1,1 +1,4 @@
 .venv/
+tinyllama_julian/logs/
+tinyllama_julian/models/
+*.gguf

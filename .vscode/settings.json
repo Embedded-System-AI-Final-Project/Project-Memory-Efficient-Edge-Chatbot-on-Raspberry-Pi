@@ -3,5 +3,6 @@
   "python.terminal.activateEnvironment": true,
   "python.analysis.autoImportCompletions": true,
   "python.analysis.typeCheckingMode": "off",
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "makefile.configureOnOpen": false
 }

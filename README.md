@@ -1,15 +1,12 @@
-# Project-Memory-Efficient-Edge-Chatbot-on-Raspberry-Pi
-Final Project
+## TinyLlama (Julian Branch)
 
-# Create and activate a virtual environment
-python -m venv venv
-# Windows
-.\venv\Scripts\activate
-# Linux / macOS / Pi
-source venv/bin/activate
+This branch implements a TinyLlama chatbot using `llama.cpp` with sliding-window KV-cache (`n_ctx`) and quantized KV-cache (`kv_cache_type`). Logs include latency, tokens/sec, memory usage, and CPU temperature.
+
+### Setup
+```bash
+# Create virtual environment
+python3 -m venv venv
+source venv/bin/activate    # Windows: .\venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
-
-# Run the baseline test
-python llama_cpp_bot.py

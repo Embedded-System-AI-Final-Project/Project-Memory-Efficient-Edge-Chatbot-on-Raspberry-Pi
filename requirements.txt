@@ -5,6 +5,7 @@ tokenizers>=0.19
 accelerate>=0.30
 
 llama-cpp-python
+psutil
 
 # System utilities
 psutil>=6.0
