@@ -1,15 +1,11 @@
-.PHONY: tinyllama-bot setup fix clean
+.PHONY: tinyllama-bot tinyllama-bench setup fix clean
 
-# -------------------------
-# Run TinyLlama Bot
-# -------------------------
 tinyllama-bot:
 	python -m tinyllama_julian.tinyllama_bot
 
-# -------------------------
-# Setup virtual environment
-# Works on Linux + Raspberry Pi
-# -------------------------
+tinyllama-bench:
+	python -m tinyllama_julian.tinyllama_benchmark
+
 setup:
 	@if [ ! -d "venv" ]; then \
 		echo "Creating virtual environment..."; \
@@ -20,14 +16,8 @@ setup:
 	@echo "Installing dependencies..."
 	@venv/bin/pip install -r requirements.txt
 
-# -------------------------
-# Format code (optional)
-# -------------------------
 fix:
 	black .
 
-# -------------------------
-# Clean environment
-# -------------------------
 clean:
 	rm -rf venv
