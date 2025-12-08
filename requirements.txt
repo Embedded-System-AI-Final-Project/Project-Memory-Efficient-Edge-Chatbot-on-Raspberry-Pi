@@ -6,6 +6,10 @@ accelerate>=0.30
 
 llama-cpp-python
 
+# Web server
+flask
+requests
+
 # System utilities
 psutil>=6.0
 numpy>=1.26
